@@ -31,7 +31,7 @@ export default function NavBar() {
         <nav className="p-4 shadow w-full h-16">
             <div className="flex flex-wrap gap-3 items-center justify-between">
                 <Link href="/notes">
-                    <Image className="hidden md:block" src={logo} alt="logo" width={40} height={40} />
+                    <p className="hidden md:block text-2xl font-extrabold" >AI Chats</p>
                 </Link>
                 <div className="flex items-center gap-2">
                     <UserButton afterSignOutUrl="/" appearance={{

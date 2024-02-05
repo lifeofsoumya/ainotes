@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
 import { useChat } from 'ai/react'
-import { XCircle } from 'lucide-react'
+import { Bot, Trash, XCircle } from 'lucide-react'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Message } from 'ai'
+import { useEffect, useRef } from 'react'
 
 interface AIChatBoxProps {
     open: boolean,
@@ -21,23 +22,64 @@ export default function AIChatBox({open, onClose} : AIChatBoxProps) {
         error
      } = useChat()
 
+     const inputRef = useRef<HTMLInputElement>(null)
+     const scrollRef = useRef<HTMLDivElement>(null)
+
+     useEffect(()=>{
+        if(scrollRef.current){
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+     }, [messages])
+
+     useEffect(()=>{
+       if(open) inputRef.current?.focus(); 
+     }, [open])
+
+     const lastMessageIsUser = messages[messages.length - 1]?.role === 'user';
+
      return <div className={cn('bottom-0 right-0 xl:right-36 z-10 w-full max-w-[500px] p-1', open ? "fixed" : "hidden")}>
         
         <div className='flex h-screen md:h-[600px] flex-col rounded bg-background border shadow-xl'>
-            <div className='h-full'>
+            <div className='h-full mt-3 px-3 overflow-auto' ref={scrollRef}>
                 {messages.map(message=>(
                     <ChatMessage message={message} key={message.id} />
                 ))}
+                {isLoading && lastMessageIsUser && (
+                    <ChatMessage
+                        message = {{
+                            role: "assistant",
+                            content: "Thinking..."
+                        }}
+                    />
+                )}
+                {error && (
+                    <ChatMessage
+                        message = {{
+                            role: "assistant",
+                            content: "Something went wrong!"
+                        }}
+                    />
+                )}
+                {!error && messages.length == 0 && (
+                    <div className='flex h-full items-center justify-center gap-3'>
+                        <Bot />
+                        <p>Ask me anything...</p>
+                    </div>)
+                }
             </div>
-            <button onClick={onClose} className='absolute top-3 right-3'>
+            <button onClick={onClose} className='absolute top-2 right-2 bg-inherit rounded-full'>
                 <XCircle size={30} />
             </button>
-            <form onSubmit={handleSubmit} className='m-3 flex gap-1'>
+            <form onSubmit={handleSubmit} className='m-3 flex gap-2'>
+                <Button title="Clear chat" variant="outline" className='shrink-0' type="button" onClick={()=>setMessages([])}>
+                    <Trash />
+                </Button>
                 <Input 
                     value={input}
                     className='focus:outline-none'
                     onChange={handleInputChange}
                     placeholder='Ask something...'
+                    ref={inputRef}
                 />
                 <Button type="submit">Send</Button>
             </form>
@@ -45,9 +87,12 @@ export default function AIChatBox({open, onClose} : AIChatBoxProps) {
      </div>
 }
 
-function ChatMessage({message: {role, content}}: {message: Message}){
-    return <div className='mb-3'>
-        <div>{role}</div>
-        <div>{content}</div>
+function ChatMessage({message: {role, content}}: {message: Pick<Message, "role" | "content">}){
+    const isAiMessage = role === 'assistant';
+    return <div className={cn('mb-3 flex items-center', isAiMessage ? "justify-start me-5" : "justify-end ms-5")}>
+        {isAiMessage && <Bot className='mr-2 shrink-0 self-start' />}
+        <p className={cn("whitespace-pre-line rounded-md border px-3 py-2", isAiMessage ? "bg-background" : "bg-primary text-primary-foreground" )}>
+            {content}
+        </p>
     </div>
 }
