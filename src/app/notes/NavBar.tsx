@@ -7,9 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import AddNoteDialog from "@/components/AddNoteDialog";
+import ThemeToggler from "@/components/ThemeToggler";
+import { dark } from '@clerk/themes'
+import { useTheme } from 'next-themes'
 
 export default function NavBar() {
     const [showAddNoteDialog, setShowAddNoteDialog] = useState(false)
+    const {theme} = useTheme();
     useEffect(()=>{
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === '/') {
@@ -30,8 +34,10 @@ export default function NavBar() {
                 </Link>
                 <div className="flex items-center gap-2">
                     <UserButton afterSignOutUrl="/" appearance={{
+                        baseTheme: (theme === "dark" ? dark : undefined),
                         elements: { avatarBox: { width: "2.5rem", height: "2.5rem" }}
                     }}/>
+                    <ThemeToggler />
                     <Button onClick={()=>setShowAddNoteDialog(true)}>
                         <Plus size={20} className="mr-2" />
                         Add Task
