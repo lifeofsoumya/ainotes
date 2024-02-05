@@ -10,6 +10,7 @@ import AddNoteDialog from "@/components/AddNoteDialog";
 import ThemeToggler from "@/components/ThemeToggler";
 import { dark } from '@clerk/themes'
 import { useTheme } from 'next-themes'
+import AIChatButton from "@/components/AIChatButton";
 
 export default function NavBar() {
     const [showAddNoteDialog, setShowAddNoteDialog] = useState(false)
@@ -27,10 +28,10 @@ export default function NavBar() {
     }, [])
     return(
         <>
-        <nav className="p-4 shadow w-full px-16 h-16">
+        <nav className="p-4 shadow w-full h-16">
             <div className="flex flex-wrap gap-3 items-center justify-between">
                 <Link href="/notes">
-                    <Image src={logo} alt="logo" width={40} height={40} />
+                    <Image className="hidden md:block" src={logo} alt="logo" width={40} height={40} />
                 </Link>
                 <div className="flex items-center gap-2">
                     <UserButton afterSignOutUrl="/" appearance={{
@@ -42,6 +43,7 @@ export default function NavBar() {
                         <Plus size={20} className="mr-2" />
                         Add Task
                     </Button>
+                    <AIChatButton />
                 </div>
             </div>
         </nav>
