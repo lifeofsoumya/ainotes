@@ -10,7 +10,7 @@ export default openai
 
 export async function getEmbeddings(text: string){
     const res = await openai.embeddings.create({
-        model: 'text-embedding-3-small', // predecessor version is text-embedding-ada-002
+        model: 'text-embedding-ada-002', // successor version is text-embedding-3-small
         input: text
     })
 

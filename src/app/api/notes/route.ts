@@ -14,7 +14,9 @@ export async function POST(req: Request){
             console.error(parseResult)
             return Response.json({error: "Invalid input"}, {status: 400})
         }
-        const { title, content } = parseResult.data;
+        let { title, content } = parseResult.data;
+        content = `Timestamp: ${new Date().toLocaleString()} \nContent: ` + content;
+        // console.log(`Timestamp: ${new Date().toLocaleString()} \nContent: ` + content + 'ok')
         const { userId } = auth();
         if(!userId) return Response.json({error: "Unauthorized"}, {status: 401})
 

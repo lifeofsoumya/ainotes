@@ -29,12 +29,12 @@ export async function POST(req: Request){
             }
         })
 
-        console.log("relevant notes found ", relevantNotes);
+        // console.log("relevant notes found ", relevantNotes);
 
         const systemMessage: ChatCompletionMessage = {
             role: "assistant",
             content: 
-            "You are an intelligent personal assistant. You answer user's question based on their exising notes. " + 
+            "You are an intelligent personal assistant. You answer user's question based on their exising notes and each note has timestamps when they were added. " + 
             "The relevant notes for this query are:\n" +
             relevantNotes.map(note => `Title: ${note.title}\n\nContent:\n${note.content}`).join("\n\n"),
         }
